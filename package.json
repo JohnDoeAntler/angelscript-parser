@@ -93,7 +93,9 @@
     }
   },
   "prettier": {
-    "singleQuote": true
+    "singleQuote": true,
+    "useTabs": true,
+    "tabWidth": 4
   },
   "nyc": {
     "extends": "@istanbuljs/nyc-config-typescript",

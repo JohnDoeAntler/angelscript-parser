@@ -1,4 +1,4 @@
-import { eTokenType } from "./tokendef";
+import { eTokenType } from './tokendef';
 
 export enum eScriptNode {
 	snUndefined,
@@ -46,19 +46,18 @@ export enum eScriptNode {
 	snListPattern,
 	snNamedArgument,
 	snScope,
-	snTryCatch
-};
+	snTryCatch,
+}
 
 export class sToken {
-    constructor (
-        public type: eTokenType,
-        public pos: number,
-        public length: number,
-    ) {}
-};
+	constructor(
+		public type: eTokenType,
+		public pos: number,
+		public length: number
+	) {}
+}
 
 export class ScriptNode {
-
 	tokenType: eTokenType = eTokenType.ttUnrecognizedToken;
 	tokenPos: number = 0;
 	tokenLength: number = 0;
@@ -69,78 +68,75 @@ export class ScriptNode {
 	firstChild: ScriptNode | null = null;
 	lastChild: ScriptNode | null = null;
 
-    constructor (public nodeType: eScriptNode) {}
+	constructor(public nodeType: eScriptNode) {}
 
-    CreateCopy (): ScriptNode {
-        let node = new ScriptNode(this.nodeType);
-        
-        node.tokenLength = this.tokenLength;
-        node.tokenPos    = this.tokenPos;
-        node.tokenType   = this.tokenType;
+	CreateCopy(): ScriptNode {
+		let node = new ScriptNode(this.nodeType);
 
-        let child = this.firstChild;
+		node.tokenLength = this.tokenLength;
+		node.tokenPos = this.tokenPos;
+		node.tokenType = this.tokenType;
 
-        while (child) {
-            node.AddChildLast(child.CreateCopy());
-            child = child.next;
-        }
+		let child = this.firstChild;
 
-        return node;
-    }
+		while (child) {
+			node.AddChildLast(child.CreateCopy());
+			child = child.next;
+		}
 
-    SetToken(token: sToken) {
-        this.tokenType = token.type;
-    }
+		return node;
+	}
 
-    UpdateSourcePos (pos: number, length: number) {
-        if (pos == 0 && length == 0) return;
+	SetToken(token: sToken) {
+		this.tokenType = token.type;
+	}
 
-        if (this.tokenPos == 0 && this.tokenLength == 0) {
-            this.tokenPos = pos;
-            this.tokenLength = length;
-        } else if (this.tokenPos > pos ) {
-            this.tokenLength = this.tokenPos + this.tokenLength - pos;
-            this.tokenPos = pos;
-        } else if (pos + length > this.tokenPos + this.tokenLength) {
-            this.tokenLength = pos + length - this.tokenPos;
-        }
-    }
+	UpdateSourcePos(pos: number, length: number) {
+		if (pos == 0 && length == 0) return;
 
-    AddChildLast (node: ScriptNode) {
-        if (this.lastChild) {
-            this.lastChild.next = node;
-            node.next = null;
-            node.prev = this.lastChild;
-            node.parent = this;
-            this.lastChild = node;
-        } else {
-            this.firstChild = node;
-            this.lastChild = node;
-            node.next = null;
-            node.prev = null;
-            node.parent = this;
-        }
+		if (this.tokenPos == 0 && this.tokenLength == 0) {
+			this.tokenPos = pos;
+			this.tokenLength = length;
+		} else if (this.tokenPos > pos) {
+			this.tokenLength = this.tokenPos + this.tokenLength - pos;
+			this.tokenPos = pos;
+		} else if (pos + length > this.tokenPos + this.tokenLength) {
+			this.tokenLength = pos + length - this.tokenPos;
+		}
+	}
 
-        this.UpdateSourcePos(node.tokenPos, node.tokenLength);
-    }
+	AddChildLast(node: ScriptNode) {
+		if (this.lastChild) {
+			this.lastChild.next = node;
+			node.next = null;
+			node.prev = this.lastChild;
+			node.parent = this;
+			this.lastChild = node;
+		} else {
+			this.firstChild = node;
+			this.lastChild = node;
+			node.next = null;
+			node.prev = null;
+			node.parent = this;
+		}
 
-    DisconnectParent() {
-        if (this.parent) {
-            if (this.parent.firstChild == this )
-                this.parent.firstChild = this.next;
-            if (this.parent.lastChild == this )
-                this.parent.lastChild = this.prev;
-        }
+		this.UpdateSourcePos(node.tokenPos, node.tokenLength);
+	}
 
-        if (this.next)
-            this.next.prev = this.prev;
+	DisconnectParent() {
+		if (this.parent) {
+			if (this.parent.firstChild == this)
+				this.parent.firstChild = this.next;
+			if (this.parent.lastChild == this)
+				this.parent.lastChild = this.prev;
+		}
 
-        if (this.prev)
-            this.prev.next = this.next;
+		if (this.next) this.next.prev = this.prev;
 
-        this.parent = null;
-        this.next = null;
-        this.prev = null;
-    }
+		if (this.prev) this.prev.next = this.next;
 
+		this.parent = null;
+		this.next = null;
+		this.prev = null;
+	}
 }

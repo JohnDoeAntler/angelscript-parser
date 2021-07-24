@@ -32,19 +32,20 @@ test('parse function', (t) => {
 });
 
 test('parse constant', (t) => {
-
 	code.SetCode(`"hello world."`);
 	parser.Reset();
 	parser.script = code;
 	const stringLiteral = parser.ParseConstant();
 
 	t.is(stringLiteral.nodeType, eScriptNode.snConstant);
-	t.is(code.code.substr(stringLiteral.tokenPos, stringLiteral.tokenLength), '"hello world."');
-
+	t.is(
+		code.code.substr(stringLiteral.tokenPos, stringLiteral.tokenLength),
+		'"hello world."'
+	);
 });
 
 // test('snDataType', (t) => {
-// 
+//
 // });
 
 // test('snIdentifier', (t) => {
