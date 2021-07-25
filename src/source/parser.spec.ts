@@ -1,12 +1,12 @@
 import test from 'ava';
-import { Parser } from './parser';
-import { ScriptCode } from './scriptcode';
+import { asCParser } from './parser';
+import { asCScriptCode } from './scriptcode';
 import { eScriptNode } from './scriptnode';
 import { asCTokenizer } from './tokenizer';
 
 const tokenizer = new asCTokenizer();
-const parser = new Parser(tokenizer);
-const code = new ScriptCode();
+const parser = new asCParser(tokenizer);
+const code = new asCScriptCode();
 
 test('parse function', (t) => {
 	code.SetCode(`void id () {}`);

@@ -57,21 +57,21 @@ export class sToken {
 	) {}
 }
 
-export class ScriptNode {
+export class asCScriptNode {
 	public tokenType: eTokenType = eTokenType.ttUnrecognizedToken;
 	public tokenPos: number = 0;
 	public tokenLength: number = 0;
 
-	public parent: ScriptNode | null = null;
-	public next: ScriptNode | null = null;
-	public prev: ScriptNode | null = null;
-	public firstChild: ScriptNode | null = null;
-	public lastChild: ScriptNode | null = null;
+	public parent: asCScriptNode | null = null;
+	public next: asCScriptNode | null = null;
+	public prev: asCScriptNode | null = null;
+	public firstChild: asCScriptNode | null = null;
+	public lastChild: asCScriptNode | null = null;
 
 	public constructor(public nodeType: eScriptNode) {}
 
-	public CreateCopy(): ScriptNode {
-		let node = new ScriptNode(this.nodeType);
+	public CreateCopy(): asCScriptNode {
+		let node = new asCScriptNode(this.nodeType);
 
 		node.tokenLength = this.tokenLength;
 		node.tokenPos = this.tokenPos;
@@ -105,7 +105,7 @@ export class ScriptNode {
 		}
 	}
 
-	public AddChildLast(node: ScriptNode) {
+	public AddChildLast(node: asCScriptNode) {
 		if (this.lastChild) {
 			this.lastChild.next = node;
 			node.next = null;

@@ -1,4 +1,4 @@
-export class ScriptCode {
+export class asCScriptCode {
 	public code = '';
 	public lineOffset = 0;
 	public linePositions: number[] = [];

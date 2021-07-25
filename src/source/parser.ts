@@ -1,5 +1,5 @@
-import { ScriptCode } from './scriptcode';
-import { eScriptNode, ScriptNode, sToken } from './scriptnode';
+import { asCScriptCode } from './scriptcode';
+import { eScriptNode, asCScriptNode, sToken } from './scriptnode';
 import {
 	TXT_AUTO_NOT_ALLOWED,
 	TXT_EXPECTED_CONSTANT,
@@ -65,15 +65,15 @@ interface ParserConfig {
 	ep: EngineProperties;
 }
 
-export class Parser {
+export class asCParser {
 
 	protected errorWhileParsing: boolean = false;
 	protected isSyntaxError: boolean = false;
 	protected checkValidTypes: boolean = false;
 	protected isParsingAppInterface: boolean = false;
 
-	protected script: ScriptCode | null = null;
-	protected scriptNode: ScriptNode | null = null;
+	protected script: asCScriptCode | null = null;
+	protected scriptNode: asCScriptNode | null = null;
 
 	protected tempString: string = '';
 
@@ -138,15 +138,15 @@ export class Parser {
 		return this.scriptNode;
 	}
 
-	public ParseFunctionDefinition(): ScriptNode;
+	public ParseFunctionDefinition(): asCScriptNode;
 	public ParseFunctionDefinition(
-		in_script: ScriptCode,
+		in_script: asCScriptCode,
 		in_expectListPattern: boolean
 	): number;
 	public ParseFunctionDefinition(
-		in_script?: ScriptCode,
+		in_script?: asCScriptCode,
 		in_expectListPattern?: boolean
-	): number | ScriptNode {
+	): number | asCScriptNode {
 		if (in_script && in_expectListPattern) {
 			this.Reset();
 
@@ -215,17 +215,17 @@ export class Parser {
 	}
 
 	protected CreateNode(type: eScriptNode) {
-		return new ScriptNode(type);
+		return new asCScriptNode(type);
 	}
 
 	// 152
-	public ParseDataType(in_script: ScriptCode, in_isReturnType: boolean): number;
-	public ParseDataType(allowVariableType?: boolean, allowAuto?: boolean): ScriptNode;
+	public ParseDataType(in_script: asCScriptCode, in_isReturnType: boolean): number;
+	public ParseDataType(allowVariableType?: boolean, allowAuto?: boolean): asCScriptNode;
 	public ParseDataType(
-		arg1: ScriptCode | boolean = false,
+		arg1: asCScriptCode | boolean = false,
 		arg2: boolean = false
-	): ScriptNode | number {
-		if (arg1 instanceof ScriptCode) {
+	): asCScriptNode | number {
+		if (arg1 instanceof asCScriptCode) {
 			const in_script = arg1;
 			const in_isReturnType = arg2;
 
@@ -297,7 +297,7 @@ export class Parser {
 	}
 
 	// 188
-	public ParseTemplateDecl(in_script: ScriptCode) {
+	public ParseTemplateDecl(in_script: asCScriptCode) {
 		this.Reset();
 
 		this.script = in_script;
@@ -372,7 +372,7 @@ export class Parser {
 	}
 
 	// 252
-	public ParsePropertyDeclaration(in_script: ScriptCode) {
+	public ParsePropertyDeclaration(in_script: asCScriptCode) {
 		this.Reset();
 
 		this.script = in_script;
@@ -414,8 +414,8 @@ export class Parser {
 	}
 
 	// 292
-	protected ParseOptionalScope(node: ScriptNode) {
-		let scope: ScriptNode = this.CreateNode(eScriptNode.snScope);
+	protected ParseOptionalScope(node: asCScriptNode) {
+		let scope: asCScriptNode = this.CreateNode(eScriptNode.snScope);
 
 		let t1 = this.GetToken();
 		let t2 = this.GetToken();
@@ -622,7 +622,7 @@ export class Parser {
 	}
 
 	// 527
-	protected ParseTemplTypeList(node: ScriptNode, required: boolean = true) {
+	protected ParseTemplTypeList(node: asCScriptNode, required: boolean = true) {
 		let t;
 		let isValid = true;
 
@@ -1202,7 +1202,7 @@ export class Parser {
 	}
 
 	// 1221
-	protected ParseMethodAttributes(funcNode: ScriptNode) {
+	protected ParseMethodAttributes(funcNode: asCScriptNode) {
 		let t1: sToken;
 
 		for (;;) {
@@ -1954,9 +1954,9 @@ export class Parser {
 		return node;
 	}
 
-	protected ParseExpression(): ScriptNode;
-	protected ParseExpression(in_script: ScriptCode): number;
-	protected ParseExpression(in_script?: ScriptCode): ScriptNode | number {
+	protected ParseExpression(): asCScriptNode;
+	protected ParseExpression(in_script: asCScriptCode): number;
+	protected ParseExpression(in_script?: asCScriptCode): asCScriptNode | number {
 		if (!in_script) {
 			// 1986
 			let node = this.CreateNode(eScriptNode.snExpression);
@@ -2235,11 +2235,11 @@ export class Parser {
 	}
 
 	// 2286
-	public ParseScript(in_script: ScriptCode): number;
+	public ParseScript(in_script: asCScriptCode): number;
 	// 2395
-	public ParseScript(inBlock: boolean): ScriptNode;
-	public ParseScript(arg: ScriptCode | boolean): number | ScriptNode {
-		if (arg instanceof ScriptCode) {
+	public ParseScript(inBlock: boolean): asCScriptNode;
+	public ParseScript(arg: asCScriptCode | boolean): number | asCScriptNode {
+		if (arg instanceof asCScriptCode) {
 			const in_script = arg;
 
 			this.Reset();
@@ -2511,12 +2511,12 @@ export class Parser {
 	}
 
 	// 2569
-	public ParseStatementBlock(): ScriptNode;
-	public ParseStatementBlock(in_script: ScriptCode, in_block: ScriptNode): number;
+	public ParseStatementBlock(): asCScriptNode;
+	public ParseStatementBlock(in_script: asCScriptCode, in_block: asCScriptNode): number;
 	public ParseStatementBlock(
-		in_script?: ScriptCode,
-		in_block?: ScriptNode
-	): ScriptNode | number {
+		in_script?: asCScriptCode,
+		in_block?: asCScriptNode
+	): asCScriptNode | number {
 		if (in_script && in_block) {
 			this.Reset();
 
@@ -2609,8 +2609,8 @@ export class Parser {
 
 	// 2590
 	protected ParseEnumeration() {
-		let ident: ScriptNode;
-		let dataType: ScriptNode;
+		let ident: asCScriptNode;
+		let dataType: asCScriptNode;
 
 		let node = this.CreateNode(eScriptNode.snEnum);
 
@@ -3485,7 +3485,7 @@ export class Parser {
 	}
 
 	// 3495
-	public ParseVarInit(in_script: ScriptCode, in_init: ScriptNode) {
+	public ParseVarInit(in_script: asCScriptCode, in_init: asCScriptNode) {
 		this.Reset();
 
 		// Tell the parser to validate the identifiers as valid types
