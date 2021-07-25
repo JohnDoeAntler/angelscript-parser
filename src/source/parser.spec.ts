@@ -63,7 +63,7 @@ test('parse constant', (t) => {
 
 // });
 
-test('snDeclaration', (t) => {
+test('parse declaration', (t) => {
 	parser['Reset']();
 	code.SetCode(`int a = "hello world.";`);
 	parser.ParseScript(code);
@@ -83,6 +83,24 @@ test('snDeclaration', (t) => {
 	t.is(identifier?.nodeType, eScriptNode.snIdentifier);
 	t.is(superficialAssignment?.nodeType, eScriptNode.snAssignment);
 	t.is(end?.nodeType, undefined);
+
+	if (superficialAssignment) {
+		parser.ParseVarInit(code, superficialAssignment);
+
+		const assignment = parser.GetScriptNode();
+		const condition = assignment?.firstChild;
+		const expression = condition?.firstChild;
+		const expressionTerm = expression?.firstChild;
+		const expressionValue = expressionTerm?.firstChild;
+		const stringLiteral = expressionValue?.firstChild;
+
+		t.is(assignment?.nodeType, eScriptNode.snAssignment);
+		t.is(condition?.nodeType, eScriptNode.snCondition);
+		t.is(expression?.nodeType, eScriptNode.snExpression);
+		t.is(expressionTerm?.nodeType, eScriptNode.snExprTerm);
+		t.is(expressionValue?.nodeType, eScriptNode.snExprValue);
+		t.is(stringLiteral?.nodeType, eScriptNode.snConstant);
+	}
 });
 
 // test('snExpressionStatement', (t) => {
