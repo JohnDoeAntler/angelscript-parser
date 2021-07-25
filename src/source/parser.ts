@@ -66,26 +66,42 @@ interface ParserConfig {
 }
 
 export class Parser {
-	errorWhileParsing: boolean = false;
-	isSyntaxError: boolean = false;
-	checkValidTypes: boolean = false;
-	isParsingAppInterface: boolean = false;
 
-	script: ScriptCode | null = null;
-	scriptNode: ScriptNode | null = null;
+	protected errorWhileParsing: boolean = false;
+	protected isSyntaxError: boolean = false;
+	protected checkValidTypes: boolean = false;
+	protected isParsingAppInterface: boolean = false;
 
-	tempString: string = '';
+	protected script: ScriptCode | null = null;
+	protected scriptNode: ScriptNode | null = null;
 
-	lastToken: sToken | null = null;
-	sourcePos: number = 0;
+	protected tempString: string = '';
 
-	errors: Message[] = [];
-	warnings: Message[] = [];
-	infos: Message[] = [];
-	config: ParserConfig;
+	protected lastToken: sToken | null = null;
+	protected sourcePos: number = 0;
 
-	constructor(
-		public tokenizer: asCTokenizer,
+	//
+	// ──────────────────────────────────────────────────────────────────────── I ──────────
+	//   :::::: C A L L B A C K   M E S S A G E : :  :   :    :     :        :          :
+	// ──────────────────────────────────────────────────────────────────────────────────
+	//
+
+	protected errors: Message[] = [];
+	protected warnings: Message[] = [];
+	protected infos: Message[] = [];
+
+	//
+	// ─── GETTER ─────────────────────────────────────────────────────────────────────
+	//
+
+	public getErrors = () => this.errors;
+	public getWarnings = () => this.errors;
+	public getInfos = () => this.errors;
+
+	protected config: ParserConfig;
+
+	public constructor(
+		protected tokenizer: asCTokenizer,
 		config?: Partial<ParserConfig>
 	) {
 		this.config = {
@@ -99,11 +115,11 @@ export class Parser {
 		};
 	}
 
-	IsTemplateType(str: string): boolean {
+	protected IsTemplateType(str: string): boolean {
 		return this.config.templateTypes.some((e) => e == str);
 	}
 
-	Reset() {
+	protected Reset() {
 		this.errorWhileParsing = false;
 		this.isSyntaxError = false;
 		this.checkValidTypes = false;
@@ -118,16 +134,16 @@ export class Parser {
 		}
 	}
 
-	GetScriptNode() {
+	public GetScriptNode() {
 		return this.scriptNode;
 	}
 
-	ParseFunctionDefinition(): ScriptNode;
-	ParseFunctionDefinition(
+	public ParseFunctionDefinition(): ScriptNode;
+	public ParseFunctionDefinition(
 		in_script: ScriptCode,
 		in_expectListPattern: boolean
 	): number;
-	ParseFunctionDefinition(
+	public ParseFunctionDefinition(
 		in_script?: ScriptCode,
 		in_expectListPattern?: boolean
 	): number | ScriptNode {
@@ -198,14 +214,14 @@ export class Parser {
 		}
 	}
 
-	CreateNode(type: eScriptNode) {
+	protected CreateNode(type: eScriptNode) {
 		return new ScriptNode(type);
 	}
 
 	// 152
-	ParseDataType(in_script: ScriptCode, in_isReturnType: boolean): number;
-	ParseDataType(allowVariableType?: boolean, allowAuto?: boolean): ScriptNode;
-	ParseDataType(
+	public ParseDataType(in_script: ScriptCode, in_isReturnType: boolean): number;
+	public ParseDataType(allowVariableType?: boolean, allowAuto?: boolean): ScriptNode;
+	public ParseDataType(
 		arg1: ScriptCode | boolean = false,
 		arg2: boolean = false
 	): ScriptNode | number {
@@ -281,7 +297,7 @@ export class Parser {
 	}
 
 	// 188
-	ParseTemplateDecl(in_script: ScriptCode) {
+	public ParseTemplateDecl(in_script: ScriptCode) {
 		this.Reset();
 
 		this.script = in_script;
@@ -356,7 +372,7 @@ export class Parser {
 	}
 
 	// 252
-	ParsePropertyDeclaration(in_script: ScriptCode) {
+	public ParsePropertyDeclaration(in_script: ScriptCode) {
 		this.Reset();
 
 		this.script = in_script;
@@ -398,7 +414,7 @@ export class Parser {
 	}
 
 	// 292
-	ParseOptionalScope(node: ScriptNode) {
+	protected ParseOptionalScope(node: ScriptNode) {
 		let scope: ScriptNode = this.CreateNode(eScriptNode.snScope);
 
 		let t1 = this.GetToken();
@@ -472,7 +488,7 @@ export class Parser {
 	}
 
 	// 398
-	ParseTypeMod(isParam: boolean) {
+	protected ParseTypeMod(isParam: boolean) {
 		let node = this.CreateNode(eScriptNode.snDataType);
 
 		// Parse possible & token
@@ -521,7 +537,7 @@ export class Parser {
 	}
 
 	// 448
-	ParseType(
+	protected ParseType(
 		allowConst: boolean,
 		allowVariableType: boolean = false,
 		allowAuto: boolean = false
@@ -606,7 +622,7 @@ export class Parser {
 	}
 
 	// 527
-	ParseTemplTypeList(node: ScriptNode, required: boolean = true) {
+	protected ParseTemplTypeList(node: ScriptNode, required: boolean = true) {
 		let t;
 		let isValid = true;
 
@@ -681,7 +697,7 @@ export class Parser {
 	}
 
 	// 599
-	ParseToken(token: number) {
+	protected ParseToken(token: number) {
 		let node = this.CreateNode(eScriptNode.snUndefined);
 
 		let t1 = this.GetToken();
@@ -701,7 +717,7 @@ export class Parser {
 	}
 
 	// 620
-	ParseOneOf(tokens: number[], count: number) {
+	protected ParseOneOf(tokens: number[], count: number) {
 		let node = this.CreateNode(eScriptNode.snUndefined);
 
 		const t1 = this.GetToken();
@@ -721,7 +737,7 @@ export class Parser {
 	}
 
 	// 684
-	ParseRealType() {
+	protected ParseRealType() {
 		let node = this.CreateNode(eScriptNode.snDataType);
 
 		const t1 = this.GetToken();
@@ -738,7 +754,7 @@ export class Parser {
 	}
 
 	// 705
-	ParseIdentifier() {
+	protected ParseIdentifier() {
 		let node = this.CreateNode(eScriptNode.snIdentifier);
 
 		const t1 = this.GetToken();
@@ -755,7 +771,7 @@ export class Parser {
 		return node;
 	}
 
-	ParseParameterList() {
+	protected ParseParameterList() {
 		let node = this.CreateNode(eScriptNode.snParameterList);
 
 		let t1 = this.GetToken();
@@ -836,7 +852,7 @@ export class Parser {
 	}
 
 	// 820
-	SuperficiallyParseExpression() {
+	protected SuperficiallyParseExpression() {
 		let node = this.CreateNode(eScriptNode.snExpression);
 
 		// Simply parse everything until the first , or ), whichever comes first.
@@ -909,7 +925,7 @@ export class Parser {
 	}
 
 	// 922
-	GetToken(): sToken {
+	protected GetToken(): sToken {
 		let token: sToken = new sToken(eTokenType.ttUnrecognizedToken, 0, 0);
 
 		// Check if the token has already been parsed
@@ -956,7 +972,7 @@ export class Parser {
 		return token;
 	}
 
-	SetPos(pos: number) {
+	protected SetPos(pos: number) {
 		if (this.lastToken) {
 			this.lastToken.pos = -1;
 		}
@@ -964,14 +980,14 @@ export class Parser {
 	}
 
 	// 965
-	RewindTo(token: sToken) {
+	protected RewindTo(token: sToken) {
 		// Store the token so it doesn't have to be tokenized again
 		this.lastToken = token;
 		this.sourcePos = token.pos;
 	}
 
 	// 978
-	Error(text: string, token: sToken) {
+	protected Error(text: string, token: sToken) {
 		this.RewindTo(token);
 
 		this.isSyntaxError = true;
@@ -985,7 +1001,7 @@ export class Parser {
 	}
 
 	// 994
-	Warning(text: string, token: sToken) {
+	protected Warning(text: string, token: sToken) {
 		if (this.script) {
 			let { row, col } = this.script.ConvertPosToRowCol(token.pos);
 
@@ -994,7 +1010,7 @@ export class Parser {
 	}
 
 	// 1003
-	Info(text: string, token: sToken) {
+	protected Info(text: string, token: sToken) {
 		this.RewindTo(token);
 
 		this.isSyntaxError = true;
@@ -1008,7 +1024,7 @@ export class Parser {
 	}
 
 	// 1017
-	IsRealType(tokenType: number) {
+	protected IsRealType(tokenType: number) {
 		if (
 			tokenType == eTokenType.ttVoid ||
 			tokenType == eTokenType.ttInt ||
@@ -1030,7 +1046,7 @@ export class Parser {
 	}
 
 	// 1036
-	IsDataType(token: sToken) {
+	protected IsDataType(token: sToken) {
 		if (token.type == eTokenType.ttIdentifier) {
 			/** #ifndef AS_NO_COMPILER
                     if (this.checkValidTypes) {
@@ -1052,19 +1068,19 @@ export class Parser {
 	}
 
 	// 1058
-	ExpectedToken(token: string): string {
+	protected ExpectedToken(token: string): string {
 		return format(TXT_EXPECTED_s, token);
 	}
 
 	// 1067
-	ExpectedTokens(t1: string, t2: string) {
+	protected ExpectedTokens(t1: string, t2: string) {
 		return format(TXT_EXPECTED_s_OR_s, t1, t2);
 	}
 
 	// 1076
-	ExpectedOneOf(tokens: number[], count: number): string;
-	ExpectedOneOf(tokens: string[], count: number): string;
-	ExpectedOneOf(tokens: (string | number)[], count: number): string {
+	protected ExpectedOneOf(tokens: number[], count: number): string;
+	protected ExpectedOneOf(tokens: string[], count: number): string;
+	protected ExpectedOneOf(tokens: (string | number)[], count: number): string {
 		let str = TXT_EXPECTED_ONE_OF;
 
 		for (let n = 0; n < count; n++) {
@@ -1083,7 +1099,7 @@ export class Parser {
 	}
 
 	// 1106
-	InsteadFound(t: sToken) {
+	protected InsteadFound(t: sToken) {
 		if (t.type == eTokenType.ttIdentifier) {
 			if (this.script) {
 				let id = this.script.code.substr(t.pos, t.length);
@@ -1099,7 +1115,7 @@ export class Parser {
 		return format(TXT_INSTEAD_FOUND_s, asCTokenizer.GetDefinition(t.type));
 	}
 
-	ParseListPattern() {
+	protected ParseListPattern() {
 		let node = this.CreateNode(eScriptNode.snListPattern);
 
 		let t1 = this.GetToken();
@@ -1177,7 +1193,7 @@ export class Parser {
 	}
 
 	// 1213
-	IdentifierIs(t: sToken, str: string) {
+	protected IdentifierIs(t: sToken, str: string) {
 		if (t.type != eTokenType.ttIdentifier) {
 			return false;
 		}
@@ -1186,7 +1202,7 @@ export class Parser {
 	}
 
 	// 1221
-	ParseMethodAttributes(funcNode: ScriptNode) {
+	protected ParseMethodAttributes(funcNode: ScriptNode) {
 		let t1: sToken;
 
 		for (;;) {
@@ -1205,7 +1221,7 @@ export class Parser {
 	}
 
 	// 1245
-	IsType() {
+	protected IsType() {
 		let ret = null;
 
 		// Set a rewind point
@@ -1302,7 +1318,7 @@ export class Parser {
 		return ret;
 	}
 
-	CheckTemplateType(t: sToken) {
+	protected CheckTemplateType(t: sToken) {
 		// Is this a template type?
 
 		if (
@@ -1385,7 +1401,7 @@ export class Parser {
 	}
 
 	// 1428
-	ParseCast() {
+	protected ParseCast() {
 		let node = this.CreateNode(eScriptNode.snCast);
 
 		let t1 = this.GetToken();
@@ -1440,7 +1456,7 @@ export class Parser {
 	}
 
 	// 1489
-	ParseExprValue() {
+	protected ParseExprValue() {
 		let node = this.CreateNode(eScriptNode.snExprValue);
 
 		let t1 = this.GetToken();
@@ -1545,7 +1561,7 @@ export class Parser {
 	}
 
 	// 1590
-	ParseConstant() {
+	protected ParseConstant() {
 		let node = this.CreateNode(eScriptNode.snConstant);
 
 		let t = this.GetToken();
@@ -1582,7 +1598,7 @@ export class Parser {
 	}
 
 	// 1622
-	IsLambda() {
+	protected IsLambda() {
 		let isLambda = false;
 		let t = this.GetToken();
 		if (
@@ -1612,7 +1628,7 @@ export class Parser {
 	}
 
 	// 1649
-	ParseLambda() {
+	protected ParseLambda() {
 		let node = this.CreateNode(eScriptNode.snFunction);
 
 		let t: sToken | null = this.GetToken();
@@ -1688,7 +1704,7 @@ export class Parser {
 	}
 
 	// 1718
-	ParseStringConstant() {
+	protected ParseStringConstant() {
 		let node = this.CreateNode(eScriptNode.snConstant);
 
 		let t = this.GetToken();
@@ -1710,7 +1726,7 @@ export class Parser {
 	}
 
 	// 1739
-	ParseFunctionCall() {
+	protected ParseFunctionCall() {
 		let node = this.CreateNode(eScriptNode.snFunctionCall);
 
 		// Parse scope prefix
@@ -1726,7 +1742,7 @@ export class Parser {
 	}
 
 	// 1757
-	ParseVariableAccess() {
+	protected ParseVariableAccess() {
 		let node = this.CreateNode(eScriptNode.snVariableAccess);
 
 		// Parse scope prefix
@@ -1739,7 +1755,7 @@ export class Parser {
 	}
 
 	// 1771
-	ParseConstructCall() {
+	protected ParseConstructCall() {
 		let node = this.CreateNode(eScriptNode.snConstructCall);
 
 		node.AddChildLast(this.ParseType(false));
@@ -1751,7 +1767,7 @@ export class Parser {
 	}
 
 	// 1786
-	ParseArgList(withParenthesis: boolean = true) {
+	protected ParseArgList(withParenthesis: boolean = true) {
 		let node = this.CreateNode(eScriptNode.snArgList);
 
 		let t1: sToken;
@@ -1850,7 +1866,7 @@ export class Parser {
 	}
 
 	// 1887
-	IsFunctionCall() {
+	protected IsFunctionCall() {
 		let s;
 		let t1, t2;
 
@@ -1890,7 +1906,7 @@ export class Parser {
 		return false;
 	}
 
-	ParseAssignment() {
+	protected ParseAssignment() {
 		let node = this.CreateNode(eScriptNode.snAssignment);
 
 		node.AddChildLast(this.ParseCondition());
@@ -1911,7 +1927,7 @@ export class Parser {
 	}
 
 	// 1953
-	ParseCondition() {
+	protected ParseCondition() {
 		let node = this.CreateNode(eScriptNode.snCondition);
 
 		node.AddChildLast(this.ParseExpression());
@@ -1938,9 +1954,9 @@ export class Parser {
 		return node;
 	}
 
-	ParseExpression(): ScriptNode;
-	ParseExpression(in_script: ScriptCode): number;
-	ParseExpression(in_script?: ScriptCode): ScriptNode | number {
+	protected ParseExpression(): ScriptNode;
+	protected ParseExpression(in_script: ScriptCode): number;
+	protected ParseExpression(in_script?: ScriptCode): ScriptNode | number {
 		if (!in_script) {
 			// 1986
 			let node = this.CreateNode(eScriptNode.snExpression);
@@ -1978,7 +1994,7 @@ export class Parser {
 	}
 
 	// 2013
-	ParseExprTerm() {
+	protected ParseExprTerm() {
 		let node = this.CreateNode(eScriptNode.snExprTerm);
 
 		// Check if the expression term is an initialization of a temp object with init list, i.e. type = {...}
@@ -2038,7 +2054,7 @@ export class Parser {
 	}
 
 	// 2077
-	ParseExprPreOp() {
+	protected ParseExprPreOp() {
 		let node = this.CreateNode(eScriptNode.snExprPreOp);
 
 		const t = this.GetToken();
@@ -2055,7 +2071,7 @@ export class Parser {
 	}
 
 	// 2098
-	ParseExprPostOp() {
+	protected ParseExprPostOp() {
 		let node = this.CreateNode(eScriptNode.snExprPostOp);
 
 		let t = this.GetToken();
@@ -2097,7 +2113,7 @@ export class Parser {
 	}
 
 	// 2154
-	ParseExprOperator() {
+	protected ParseExprOperator() {
 		let node = this.CreateNode(eScriptNode.snExprOperator);
 
 		let t = this.GetToken();
@@ -2114,7 +2130,7 @@ export class Parser {
 	}
 
 	// 2175
-	ParseAssignOperator() {
+	protected ParseAssignOperator() {
 		let node = this.CreateNode(eScriptNode.snExprOperator);
 
 		let t = this.GetToken();
@@ -2131,7 +2147,7 @@ export class Parser {
 	}
 
 	// 2195
-	IsOperator(tokenType: number) {
+	protected IsOperator(tokenType: number) {
 		return (
 			tokenType == eTokenType.ttPlus ||
 			tokenType == eTokenType.ttMinus ||
@@ -2160,7 +2176,7 @@ export class Parser {
 	}
 
 	// 2225
-	IsAssignOperator(tokenType: number) {
+	protected IsAssignOperator(tokenType: number) {
 		return (
 			tokenType == eTokenType.ttAssignment ||
 			tokenType == eTokenType.ttAddAssign ||
@@ -2179,7 +2195,7 @@ export class Parser {
 	}
 
 	// 2245
-	IsPreOperator(tokenType: number) {
+	protected IsPreOperator(tokenType: number) {
 		return (
 			tokenType == eTokenType.ttMinus ||
 			tokenType == eTokenType.ttPlus ||
@@ -2192,7 +2208,7 @@ export class Parser {
 	}
 
 	// 2258
-	IsPostOperator(tokenType: number) {
+	protected IsPostOperator(tokenType: number) {
 		return (
 			tokenType == eTokenType.ttInc ||
 			tokenType == eTokenType.ttDec ||
@@ -2203,7 +2219,7 @@ export class Parser {
 	}
 
 	// 2269
-	IsConstant(tokenType: number) {
+	protected IsConstant(tokenType: number) {
 		return (
 			tokenType == eTokenType.ttIntConstant ||
 			tokenType == eTokenType.ttFloatConstant ||
@@ -2219,10 +2235,10 @@ export class Parser {
 	}
 
 	// 2286
-	ParseScript(in_script: ScriptCode): number;
+	public ParseScript(in_script: ScriptCode): number;
 	// 2395
-	ParseScript(inBlock: boolean): ScriptNode;
-	ParseScript(arg: ScriptCode | boolean): number | ScriptNode {
+	public ParseScript(inBlock: boolean): ScriptNode;
+	public ParseScript(arg: ScriptCode | boolean): number | ScriptNode {
 		if (arg instanceof ScriptCode) {
 			const in_script = arg;
 
@@ -2342,7 +2358,7 @@ export class Parser {
 	}
 
 	// 2327
-	ParseImport() {
+	protected ParseImport() {
 		let node = this.CreateNode(eScriptNode.snImport);
 
 		let t = this.GetToken();
@@ -2414,7 +2430,7 @@ export class Parser {
 	}
 
 	// 2492
-	ParseNamespace() {
+	protected ParseNamespace() {
 		let node = this.CreateNode(eScriptNode.snNamespace);
 
 		let t1 = this.GetToken();
@@ -2495,9 +2511,9 @@ export class Parser {
 	}
 
 	// 2569
-	ParseStatementBlock(): ScriptNode;
-	ParseStatementBlock(in_script: ScriptCode, in_block: ScriptNode): number;
-	ParseStatementBlock(
+	public ParseStatementBlock(): ScriptNode;
+	public ParseStatementBlock(in_script: ScriptCode, in_block: ScriptNode): number;
+	public ParseStatementBlock(
 		in_script?: ScriptCode,
 		in_block?: ScriptNode
 	): ScriptNode | number {
@@ -2592,7 +2608,7 @@ export class Parser {
 	}
 
 	// 2590
-	ParseEnumeration() {
+	protected ParseEnumeration() {
 		let ident: ScriptNode;
 		let dataType: ScriptNode;
 
@@ -2719,7 +2735,7 @@ export class Parser {
 	}
 
 	// 2723
-	IsVarDecl() {
+	protected IsVarDecl() {
 		// Set start point so that we can rewind
 		let t = this.GetToken();
 		this.RewindTo(t);
@@ -2803,7 +2819,7 @@ export class Parser {
 	}
 
 	// 2804
-	IsVirtualPropertyDecl() {
+	protected IsVirtualPropertyDecl() {
 		// Set start point so that we can rewind
 		let t = this.GetToken();
 		this.RewindTo(t);
@@ -2846,7 +2862,7 @@ export class Parser {
 	}
 
 	// 2847
-	IsFuncDecl(isMethod: boolean) {
+	protected IsFuncDecl(isMethod: boolean) {
 		// Set start point so that we can rewind
 		let t = this.GetToken();
 		this.RewindTo(t);
@@ -2959,7 +2975,7 @@ export class Parser {
 	}
 
 	// 2959
-	ParseFuncDef() {
+	protected ParseFuncDef() {
 		let node = this.CreateNode(eScriptNode.snFuncDef);
 
 		// Allow keywords 'external' and 'shared' before 'interface'
@@ -3012,7 +3028,7 @@ export class Parser {
 	}
 
 	// 3011
-	ParseFunction(isMethod: boolean = false) {
+	protected ParseFunction(isMethod: boolean = false) {
 		let node = this.CreateNode(eScriptNode.snFunction);
 
 		let t1 = this.GetToken();
@@ -3102,7 +3118,7 @@ export class Parser {
 	}
 
 	// 3109
-	ParseInterfaceMethod() {
+	protected ParseInterfaceMethod() {
 		let node = this.CreateNode(eScriptNode.snFunction);
 
 		node.AddChildLast(this.ParseType(true));
@@ -3136,7 +3152,7 @@ export class Parser {
 		return node;
 	}
 
-	ParseVirtualPropertyDecl(isMethod: boolean, isInterface: boolean) {
+	protected ParseVirtualPropertyDecl(isMethod: boolean, isInterface: boolean) {
 		let node = this.CreateNode(eScriptNode.snVirtualProperty);
 
 		let t1 = this.GetToken();
@@ -3237,7 +3253,7 @@ export class Parser {
 	}
 
 	// 3252
-	ParseInterface() {
+	protected ParseInterface() {
 		let node = this.CreateNode(eScriptNode.snInterface);
 
 		// Allow keywords 'external' and 'shared' before 'interface'
@@ -3333,7 +3349,7 @@ export class Parser {
 		return node;
 	}
 
-	ParseMixin() {
+	protected ParseMixin() {
 		let node = this.CreateNode(eScriptNode.snMixin);
 
 		let t = this.GetToken();
@@ -3353,7 +3369,7 @@ export class Parser {
 	}
 
 	// 3375
-	ParseClass() {
+	protected ParseClass() {
 		let node = this.CreateNode(eScriptNode.snClass);
 
 		let t = this.GetToken();
@@ -3469,7 +3485,7 @@ export class Parser {
 	}
 
 	// 3495
-	ParseVarInit(in_script: ScriptCode, in_init: ScriptNode) {
+	public ParseVarInit(in_script: ScriptCode, in_init: ScriptNode) {
 		this.Reset();
 
 		// Tell the parser to validate the identifiers as valid types
@@ -3525,7 +3541,7 @@ export class Parser {
 	}
 
 	// 3544
-	SuperficiallyParseVarInit() {
+	protected SuperficiallyParseVarInit() {
 		let node = this.CreateNode(eScriptNode.snAssignment);
 
 		let t = this.GetToken();
@@ -3600,7 +3616,7 @@ export class Parser {
 	}
 
 	// 3624
-	SuperficiallyParseStatementBlock() {
+	protected SuperficiallyParseStatementBlock() {
 		let node = this.CreateNode(eScriptNode.snStatementBlock);
 
 		// This function will only superficially parse the statement block in order to find the end of it
@@ -3639,7 +3655,7 @@ export class Parser {
 	}
 
 	// 3754
-	ParseInitList() {
+	protected ParseInitList() {
 		let node = this.CreateNode(eScriptNode.snInitList);
 
 		let t1 = this.GetToken();
@@ -3733,7 +3749,7 @@ export class Parser {
 	}
 
 	// 3865
-	ParseDeclaration(
+	protected ParseDeclaration(
 		isClassProp: boolean = false,
 		isGlobalVar: boolean = false
 	) {
@@ -3808,7 +3824,7 @@ export class Parser {
 	}
 
 	// 3951
-	ParseStatement() {
+	protected ParseStatement() {
 		const t1 = this.GetToken();
 		this.RewindTo(t1);
 
@@ -3842,7 +3858,7 @@ export class Parser {
 	}
 
 	// 3990
-	ParseExpressionStatement() {
+	protected ParseExpressionStatement() {
 		let node = this.CreateNode(eScriptNode.snExpressionStatement);
 
 		let t = this.GetToken();
@@ -3870,7 +3886,7 @@ export class Parser {
 		return node;
 	}
 
-	ParseSwitch() {
+	protected ParseSwitch() {
 		let node = this.CreateNode(eScriptNode.snSwitch);
 
 		let t = this.GetToken();
@@ -3937,7 +3953,7 @@ export class Parser {
 	}
 
 	// 4098
-	ParseCase() {
+	protected ParseCase() {
 		let node = this.CreateNode(eScriptNode.snCase);
 
 		let t = this.GetToken();
@@ -3994,7 +4010,7 @@ export class Parser {
 	}
 
 	// 4154
-	ParseIf() {
+	protected ParseIf() {
 		let node = this.CreateNode(eScriptNode.snIf);
 
 		let t = this.GetToken();
@@ -4049,7 +4065,7 @@ export class Parser {
 	}
 
 	//  4206
-	ParseTryCatch() {
+	protected ParseTryCatch() {
 		let node = this.CreateNode(eScriptNode.snTryCatch);
 
 		let t = this.GetToken();
@@ -4079,7 +4095,7 @@ export class Parser {
 	}
 
 	// 4240
-	ParseFor() {
+	protected ParseFor() {
 		let node = this.CreateNode(eScriptNode.snFor);
 
 		let t = this.GetToken();
@@ -4144,7 +4160,7 @@ export class Parser {
 	}
 
 	// 4308
-	ParseWhile() {
+	protected ParseWhile() {
 		let node = this.CreateNode(eScriptNode.snWhile);
 
 		let t = this.GetToken();
@@ -4184,7 +4200,7 @@ export class Parser {
 	}
 
 	// 4349
-	ParseDoWhile() {
+	protected ParseDoWhile() {
 		let node = this.CreateNode(eScriptNode.snDoWhile);
 
 		let t = this.GetToken();
@@ -4246,7 +4262,7 @@ export class Parser {
 	}
 
 	// 4408
-	ParseReturn() {
+	protected ParseReturn() {
 		let node = this.CreateNode(eScriptNode.snReturn);
 
 		let t = this.GetToken();
@@ -4285,7 +4301,7 @@ export class Parser {
 	}
 
 	// 4450
-	ParseBreak() {
+	protected ParseBreak() {
 		let node = this.CreateNode(eScriptNode.snBreak);
 
 		let t = this.GetToken();
@@ -4309,7 +4325,7 @@ export class Parser {
 		return node;
 	}
 
-	ParseContinue() {
+	protected ParseContinue() {
 		let node = this.CreateNode(eScriptNode.snContinue);
 
 		let t = this.GetToken();
@@ -4333,7 +4349,7 @@ export class Parser {
 	}
 
 	// 4509
-	ParseTypedef() {
+	protected ParseTypedef() {
 		// Create the typedef node
 		let node = this.CreateNode(eScriptNode.snTypedef);
 

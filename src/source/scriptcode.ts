@@ -1,9 +1,9 @@
 export class ScriptCode {
-	code = '';
-	lineOffset = 0;
-	linePositions: number[] = [];
+	public code = '';
+	public lineOffset = 0;
+	public linePositions: number[] = [];
 
-	SetCode(in_code: string) {
+	public SetCode(in_code: string) {
 		if (!in_code) {
 			throw new Error();
 		}
@@ -19,7 +19,7 @@ export class ScriptCode {
 		this.linePositions.push(in_code.length);
 	}
 
-	ConvertPosToRowCol(pos: number) {
+	public ConvertPosToRowCol(pos: number) {
 		if (this.linePositions.length == 0) {
 			return {
 				row: this.lineOffset,
@@ -57,7 +57,7 @@ export class ScriptCode {
 		};
 	}
 
-	TokenEquals(pos: number, len: number, str: string) {
+	public TokenEquals(pos: number, len: number, str: string) {
 		return this.code.substr(pos, len) === str;
 	}
 }

@@ -58,19 +58,19 @@ export class sToken {
 }
 
 export class ScriptNode {
-	tokenType: eTokenType = eTokenType.ttUnrecognizedToken;
-	tokenPos: number = 0;
-	tokenLength: number = 0;
+	public tokenType: eTokenType = eTokenType.ttUnrecognizedToken;
+	public tokenPos: number = 0;
+	public tokenLength: number = 0;
 
-	parent: ScriptNode | null = null;
-	next: ScriptNode | null = null;
-	prev: ScriptNode | null = null;
-	firstChild: ScriptNode | null = null;
-	lastChild: ScriptNode | null = null;
+	public parent: ScriptNode | null = null;
+	public next: ScriptNode | null = null;
+	public prev: ScriptNode | null = null;
+	public firstChild: ScriptNode | null = null;
+	public lastChild: ScriptNode | null = null;
 
-	constructor(public nodeType: eScriptNode) {}
+	public constructor(public nodeType: eScriptNode) {}
 
-	CreateCopy(): ScriptNode {
+	public CreateCopy(): ScriptNode {
 		let node = new ScriptNode(this.nodeType);
 
 		node.tokenLength = this.tokenLength;
@@ -87,11 +87,11 @@ export class ScriptNode {
 		return node;
 	}
 
-	SetToken(token: sToken) {
+	public SetToken(token: sToken) {
 		this.tokenType = token.type;
 	}
 
-	UpdateSourcePos(pos: number, length: number) {
+	public UpdateSourcePos(pos: number, length: number) {
 		if (pos == 0 && length == 0) return;
 
 		if (this.tokenPos == 0 && this.tokenLength == 0) {
@@ -105,7 +105,7 @@ export class ScriptNode {
 		}
 	}
 
-	AddChildLast(node: ScriptNode) {
+	public AddChildLast(node: ScriptNode) {
 		if (this.lastChild) {
 			this.lastChild.next = node;
 			node.next = null;
@@ -123,7 +123,7 @@ export class ScriptNode {
 		this.UpdateSourcePos(node.tokenPos, node.tokenLength);
 	}
 
-	DisconnectParent() {
+	public DisconnectParent() {
 		if (this.parent) {
 			if (this.parent.firstChild == this)
 				this.parent.firstChild = this.next;
