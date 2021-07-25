@@ -1,9 +1,10 @@
 export class asCScriptCode {
 	public code = '';
-	public lineOffset = 0;
 	public linePositions: number[] = [];
 
 	public SetCode(in_code: string) {
+		this.linePositions.length = 0;
+
 		if (!in_code) {
 			throw new Error();
 		}
@@ -22,7 +23,7 @@ export class asCScriptCode {
 	public ConvertPosToRowCol(pos: number) {
 		if (this.linePositions.length == 0) {
 			return {
-				row: this.lineOffset,
+				row: 0,
 				col: 1,
 			};
 		}
@@ -30,7 +31,7 @@ export class asCScriptCode {
 		// Do a binary search in the buffer
 		let max = this.linePositions.length - 1;
 		let min = 0;
-		let i = max / 2;
+		let i = Math.floor(max / 2);
 
 		while (true) {
 			if (this.linePositions[i] < pos) {
@@ -38,13 +39,13 @@ export class asCScriptCode {
 				if (min == i) break;
 
 				min = i;
-				i = (max + min) / 2;
+				i = Math.floor((max + min) / 2);
 			} else if (this.linePositions[i] > pos) {
 				// Have we found the smallest number > programPoisition?
 				if (max == i) break;
 
 				max = i;
-				i = (max + min) / 2;
+				i = Math.floor((max + min) / 2);
 			} else {
 				// We found the exact position
 				break;
@@ -52,7 +53,7 @@ export class asCScriptCode {
 		}
 
 		return {
-			row: i + 1 + this.lineOffset,
+			row: i + 1,
 			col: pos - this.linePositions[i] + 1,
 		};
 	}
