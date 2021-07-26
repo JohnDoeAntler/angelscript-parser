@@ -49,8 +49,19 @@ const format = (fmt: string, ...args: string[]) => {
 	return args.reduce((a, b) => a.replace(/%./, b), fmt);
 };
 
-export class Message extends Error {
-	constructor(public text: string, public row: number, public col: number) {
+enum LoggingSeverity {
+	INFO = 1,
+	WARNING = 2,
+	ERROR = 4
+}
+
+export class Log extends Error {
+	constructor(
+		public severity: LoggingSeverity,
+		public message: string,
+		public row: number,
+		public col: number
+	) {
 		super();
 	}
 }
@@ -86,17 +97,13 @@ export class asCParser {
 	// ──────────────────────────────────────────────────────────────────────────────────
 	//
 
-	protected errors: Message[] = [];
-	protected warnings: Message[] = [];
-	protected infos: Message[] = [];
+	protected logs: Log[] = [];
 
 	//
 	// ─── GETTER ─────────────────────────────────────────────────────────────────────
 	//
 
-	public getErrors = () => this.errors;
-	public getWarnings = () => this.warnings;
-	public getInfos = () => this.infos;
+	public getLogs = () => this.logs;
 
 	protected config: ParserConfig;
 
@@ -996,7 +1003,7 @@ export class asCParser {
 		if (this.script) {
 			let { row, col } = this.script.ConvertPosToRowCol(token.pos);
 
-			this.errors.push(new Message(text, row, col));
+			this.logs.push(new Log(LoggingSeverity.ERROR, text, row, col));
 		}
 	}
 
@@ -1005,7 +1012,7 @@ export class asCParser {
 		if (this.script) {
 			let { row, col } = this.script.ConvertPosToRowCol(token.pos);
 
-			this.warnings.push(new Message(text, row, col));
+			this.logs.push(new Log(LoggingSeverity.WARNING, text, row, col));
 		}
 	}
 
@@ -1019,7 +1026,7 @@ export class asCParser {
 		if (this.script) {
 			let { row, col } = this.script.ConvertPosToRowCol(token.pos);
 
-			this.infos.push(new Message(text, row, col));
+			this.logs.push(new Log(LoggingSeverity.INFO, text, row, col));
 		}
 	}
 

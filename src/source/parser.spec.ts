@@ -12,7 +12,7 @@ test('parse function', (t) => {
 	code.SetCode(`void id () {}`);
 	parser.ParseScript(code);
 
-	t.deepEqual(parser.getErrors(), []);
+	t.deepEqual(parser.getLogs(), []);
 
 	const script = parser.GetScriptNode();
 	const functionDeclaration = script?.firstChild;
@@ -39,7 +39,7 @@ test('parse constant', (t) => {
 	parser['script'] = code;
 	const stringLiteral = parser['ParseConstant']();
 
-	t.deepEqual(parser.getErrors(), []);
+	t.deepEqual(parser.getLogs(), []);
 	t.is(stringLiteral.nodeType, eScriptNode.snConstant);
 	t.is(
 		code.code.substr(stringLiteral.tokenPos, stringLiteral.tokenLength),
@@ -68,7 +68,7 @@ test('parse declaration', (t) => {
 	code.SetCode(`int a = "hello world.";`);
 	parser.ParseScript(code);
 
-	t.deepEqual(parser.getErrors(), []);
+	t.deepEqual(parser.getLogs(), []);
 
 	const script = parser.GetScriptNode();
 	const variableDeclaration = script?.firstChild;
