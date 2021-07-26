@@ -51,10 +51,8 @@ export class asCTokenizer {
 			this.keywordTable.get(e.word[0])?.push(e);
 		});
 
-		Object.keys(this.keywordTable).forEach((e) => {
-			this.keywordTable
-				.get(e)
-				?.sort((a, b) => a.wordLength - b.wordLength);
+		this.keywordTable.forEach((v, k, m) => {
+			m.set(k, v.sort((a, b) => a.wordLength - b.wordLength).reverse());
 		});
 	}
 
