@@ -385,6 +385,7 @@ export class asCTokenizer {
 				if (
 					(c >= 'a' && c <= 'z') ||
 					(c >= 'A' && c <= 'Z') ||
+					(c >= '0' && c <= '9') ||
 					c == '_' ||
 					c.charCodeAt(0) > 255 // && engine->ep.allowUnicodeIdentifiers
 				) {
