@@ -95,8 +95,8 @@ export class asCParser {
 	//
 
 	public getErrors = () => this.errors;
-	public getWarnings = () => this.errors;
-	public getInfos = () => this.errors;
+	public getWarnings = () => this.warnings;
+	public getInfos = () => this.infos;
 
 	protected config: ParserConfig;
 
