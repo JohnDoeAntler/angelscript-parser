@@ -2690,7 +2690,7 @@ export class asCParser {
 				break;
 			}
 
-			if (token.type == eTokenType.ttIdentifier) {
+			if (token.type != eTokenType.ttIdentifier) {
 				this.Error(TXT_EXPECTED_IDENTIFIER, token);
 				this.Error(this.InsteadFound(token), token);
 				return node;
