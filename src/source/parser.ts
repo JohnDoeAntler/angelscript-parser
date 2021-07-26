@@ -129,10 +129,6 @@ export class asCParser {
 		this.scriptNode = null;
 		this.script = null;
 
-		this.errors = [];
-		this.warnings = [];
-		this.infos = [];
-
 		if (this.lastToken) {
 			this.lastToken.pos = -1;
 		}
