@@ -1958,9 +1958,9 @@ export class asCParser {
 		return node;
 	}
 
-	protected ParseExpression(): asCScriptNode;
-	protected ParseExpression(in_script: asCScriptCode): number;
-	protected ParseExpression(in_script?: asCScriptCode): asCScriptNode | number {
+	public ParseExpression(): asCScriptNode;
+	public ParseExpression(in_script: asCScriptCode): number;
+	public ParseExpression(in_script?: asCScriptCode): asCScriptNode | number {
 		if (!in_script) {
 			// 1986
 			let node = this.CreateNode(eScriptNode.snExpression);
