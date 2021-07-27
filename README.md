@@ -77,7 +77,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [https://twitter.com/JohnDoeAntler](https://twitter.com/twitter_handle)
+John Doe Antler - [https://twitter.com/JohnDoeAntler](https://twitter.com/twitter_handle)
 
 Project Link: [https://github.com/johndoeantler/angelscript-parser](https://github.com/johndoeantler/angelscript-parser)
 
