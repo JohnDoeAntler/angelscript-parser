@@ -408,9 +408,12 @@ export class asCTokenizer {
 	}
 
 	IsDigitInRadix(ch: string, radix: number): boolean {
-		if (ch >= '0' && ch <= '9') return '0'.charCodeAt(0) < radix;
-		if (ch >= 'A' && ch <= 'Z') return 'A'.charCodeAt(0) - 10 < radix;
-		if (ch >= 'a' && ch <= 'z') return 'a'.charCodeAt(0) - 10 < radix;
+		if (ch >= '0' && ch <= '9')
+			return ch.charCodeAt(0) - '0'.charCodeAt(0) < radix;
+		if (ch >= 'A' && ch <= 'Z')
+			return ch.charCodeAt(0) - 'A'.charCodeAt(0) + 10 < radix;
+		if (ch >= 'a' && ch <= 'z')
+			return ch.charCodeAt(0) - 'a'.charCodeAt(0) + 10 < radix;
 		return false;
 	}
 }
