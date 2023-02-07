@@ -52,7 +52,7 @@ const format = (fmt: string, ...args: string[]) => {
 enum LoggingSeverity {
 	INFO = 1,
 	WARNING = 2,
-	ERROR = 4
+	ERROR = 4,
 }
 
 export class Log extends Error {
@@ -77,7 +77,6 @@ interface ParserConfig {
 }
 
 export class asCParser {
-
 	protected errorWhileParsing: boolean = false;
 	protected isSyntaxError: boolean = false;
 	protected checkValidTypes: boolean = false;
@@ -226,8 +225,14 @@ export class asCParser {
 	}
 
 	// 152
-	public ParseDataType(in_script: asCScriptCode, in_isReturnType: boolean): number;
-	public ParseDataType(allowVariableType?: boolean, allowAuto?: boolean): asCScriptNode;
+	public ParseDataType(
+		in_script: asCScriptCode,
+		in_isReturnType: boolean
+	): number;
+	public ParseDataType(
+		allowVariableType?: boolean,
+		allowAuto?: boolean
+	): asCScriptNode;
 	public ParseDataType(
 		arg1: asCScriptCode | boolean = false,
 		arg2: boolean = false
@@ -629,7 +634,10 @@ export class asCParser {
 	}
 
 	// 527
-	protected ParseTemplTypeList(node: asCScriptNode, required: boolean = true) {
+	protected ParseTemplTypeList(
+		node: asCScriptNode,
+		required: boolean = true
+	) {
 		let t;
 		let isValid = true;
 
@@ -1087,7 +1095,10 @@ export class asCParser {
 	// 1076
 	protected ExpectedOneOf(tokens: number[], count: number): string;
 	protected ExpectedOneOf(tokens: string[], count: number): string;
-	protected ExpectedOneOf(tokens: (string | number)[], count: number): string {
+	protected ExpectedOneOf(
+		tokens: (string | number)[],
+		count: number
+	): string {
 		let str = TXT_EXPECTED_ONE_OF;
 
 		for (let n = 0; n < count; n++) {
@@ -2519,7 +2530,10 @@ export class asCParser {
 
 	// 2569
 	public ParseStatementBlock(): asCScriptNode;
-	public ParseStatementBlock(in_script: asCScriptCode, in_block: asCScriptNode): number;
+	public ParseStatementBlock(
+		in_script: asCScriptCode,
+		in_block: asCScriptNode
+	): number;
 	public ParseStatementBlock(
 		in_script?: asCScriptCode,
 		in_block?: asCScriptNode
@@ -3159,7 +3173,10 @@ export class asCParser {
 		return node;
 	}
 
-	protected ParseVirtualPropertyDecl(isMethod: boolean, isInterface: boolean) {
+	protected ParseVirtualPropertyDecl(
+		isMethod: boolean,
+		isInterface: boolean
+	) {
 		let node = this.CreateNode(eScriptNode.snVirtualProperty);
 
 		let t1 = this.GetToken();
